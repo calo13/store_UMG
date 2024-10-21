@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Menú Principal - Tienda Mariano Gálvez{% endblock %}
+
+{% block content %}
+
+<style>
+
+    
+    /* Ajustar los márgenes para más espacio entre elementos */
+    .container {
+        margin-top: 50px;
+    }
+
+
+
+    /* Mejoras en la descripción de la tarea */
+    .task-description {
+        background-color: #f8f9fa;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.1);
+        font-size: 18px;
+        color: #333;
+        line-height: 1.8;
+        transition: background-color 0.3s ease;
+    }
+
+    .task-description:hover {
+        background-color: #e9ecef;
+        box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Mejora en el estilo de los integrantes del grupo */
+    .team-members {
+        background-color: #ffffff;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.1);
+        font-size: 18px;
+        list-style-type: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .team-members h3 {
+        font-weight: bold;
+        color: #007bff;
+        margin-bottom: 15px;
+    }
+
+    .team-members:hover {
+        background-color: #f8f9fa;
+        box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .team-members li {
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+    }
+
+    .team-members li i {
+        color: #28a745;
+        margin-right: 10px;
+    }
+
+    /* Contenedor de la imagen centrada */
+    .logo-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 30px;
+        padding: 20px;
+    }
+
+    .logo-container img {
+        max-width: 400px; /* Tamaño más grande para la imagen */
+        width: 100%;
+     
+    }
+
+    /* Responsive para móviles */
+    @media (max-width: 768px) {
+        .task-description,
+        .team-members {
+            font-size: 16px;
+        }
+
+        .container {
+            margin-top: 30px;
+        }
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="row mt-3">
+        <!-- Columna para la descripción de la tarea -->
+        <div class="col-md-6">
+            <div class="task-description">
+                <h2>Descripción de la Tarea</h2>
+                <p>Esta tarea consiste en desarrollar una aplicación web para la administración de clientes y productos.
+                    La aplicación permitirá a los usuarios registrar nuevos clientes, gestionar productos y emitir
+                    facturas. Utilizaremos tecnologías como Phyton, Flask, Javascript Bootstrap, CSSy archivos de texto para el almacenamiento
+                    de datos.</p>
+            </div>
+        </div>
+
+        <!-- Columna para los integrantes del grupo -->
+        <div class="col-md-6">
+            <div class="team-members">
+                <h3>Integrantes del Grupo</h3>
+                <ul>
+                    <li>
+                        <i class="bi bi-person-circle"></i> Byron Geovani Hernandez Xon
+                        <strong> 
+                            <span class="fluorescent-text ms-3">0900-23-25767</span> 
+                        </strong> 
+                    </li>
+                    <li>
+                        <i class="bi bi-person-circle"></i> Jackelin Paulina avila Cifuentes
+                        <strong> 
+                            <span class="fluorescent-text ms-3">0900-24-772</span> 
+                        </strong> 
+                    </li>
+                    <li>
+                        <i class="bi bi-person-circle"></i> Keren Daniela López de la Rosa
+                        <strong> 
+                            <span class="fluorescent-text ms-3"> 0900-242-6521</span> 
+                        </strong> 
+                    </li>
+                    <li>
+                        <i class="bi bi-person-circle"></i>Hazel Inonne De Mata Monterroso
+                        <strong> 
+                            <span class="fluorescent-text ms-3">0900-24-19330</span> 
+                        </strong> 
+                    </li>
+                    <li>
+                        <i class="bi bi-person-circle"></i> Carlos Augusto López Urizar
+                        <strong> 
+                            <span class="fluorescent-text ms-3">0900-24-18605</span> 
+                        </strong> 
+                    </li>
+                  
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Imagen del logo al centro -->
+    <div class="logo-container w-100">
+        <img src="{{ url_for('static', filename='images/umg2.png') }}" alt="Logo Universidad">
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block title %}Registrar Cliente - Tienda Mariano Gálvez{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="row align-items-center mt-5">
+            <!-- Formulario al lado izquierdo -->
+            <div class="col-md-6">
+                <div class="p-4" style="border: 1px solid #ddd; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); background-color: #fff;">
+                    <h2 class="mb-4 text-center">Registrar Nuevo Cliente</h2>
+                    <form action="/cliente" method="POST">
+                        <div class="form-group mb-3">
+                            <input type="text" name="nombres" class="form-control" placeholder="Nombres completos" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <input type="text" name="nit" class="form-control" placeholder="NIT" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <input type="email" name="correo" class="form-control" placeholder="Correo electrónico" required>
+                        </div>
+                        <div class="form-group mb-4">
+                            <input type="tel" name="telefono" class="form-control" placeholder="Teléfono" required>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-block">Registrar Cliente</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Imagen al lado derecho -->
+            <div class="col-md-6">
+                <div class="p-4" style="border: 1px solid #ddd; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); background-color: #fff;">
+                    <img src="{{ url_for('static', filename='images/3.jpg') }}" class="img-fluid rounded" alt="Registrar Cliente" style="max-height: 400px; width: 100%; object-fit: cover;">
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla con los clientes -->
+        <div class="row mt-5">
+            <h3 class="mb-4">Clientes Registrados</h3>
+            <table class="table table-bordered table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombres</th>
+                        <th>NIT</th>
+                        <th>Correo</th>
+                        <th>Teléfono</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cliente in clientes %}
+                    <tr>
+                        <td>{{ cliente.id }}</td>
+                        <td>{{ cliente.nombres }}</td>
+                        <td>{{ cliente.nit }}</td>
+                        <td>{{ cliente.correo }}</td>
+                        <td>{{ cliente.telefono }}</td>
+                        <td>
+                       
+                            <!-- Botón Modificar con ícono de lápiz -->
+<button class="btn btn-warning btn-sm" onclick="cargarDatosEnModal('{{ cliente.id }}')" data-bs-toggle="modal" data-bs-target="#modalEditarCliente">
+    <i class="bi bi-pencil"></i> Modificar
+</button>
+
+<!-- Botón Eliminar con ícono de bote de basura -->
+<button class="btn btn-danger btn-sm" onclick="confirmDelete('{{ cliente.id }}')">
+    <i class="bi bi-trash"></i> Eliminar
+</button>
+                            
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+<!-- Modal para editar cliente -->
+<div class="modal fade" id="modalEditarCliente" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Modificar Cliente</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="formEditarCliente" action="/modificar_cliente" method="POST">
+            <input type="hidden" id="clienteIdModal" name="id">
+            <div class="form-group mb-3">
+              <label for="nombres">Nombres</label>
+              <input type="text" name="nombres" id="nombresModal" class="form-control" required>
+            </div>
+            <div class="form-group mb-3">
+              <label for="nit">NIT</label>
+              <input type="text" name="nit" id="nitModal" class="form-control" required>
+            </div>
+            <div class="form-group mb-3">
+              <label for="correo">Correo electrónico</label>
+              <input type="email" name="correo" id="correoModal" class="form-control" required>
+            </div>
+            <div class="form-group mb-3">
+              <label for="telefono">Teléfono</label>
+              <input type="tel" name="telefono" id="telefonoModal" class="form-control" required>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+              <button type="submit" class="btn btn-warning">Modificar Cliente</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- seccion del modal para editar -->
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+        function confirmDelete(clienteId) {
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "No podrás revertir esta acción",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redirigir a la ruta de eliminación con el ID del cliente
+                    window.location.href = `/eliminar_cliente/${clienteId}`;
+                }
+            })
+        }
+        function cargarDatosEnModal(id) {
+    fetch(`/editar_cliente/${id}`)
+    .then(response => {
+      
+        if (!response.ok) {
+            throw new Error('Error al obtener los datos del cliente');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Cargar los datos en el modal
+        document.getElementById('clienteIdModal').value = data.id;
+        document.getElementById('nombresModal').value = data.nombres;
+        document.getElementById('nitModal').value = data.nit;
+        document.getElementById('correoModal').value = data.correo;
+        document.getElementById('telefonoModal').value = data.telefono;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('No se pudo cargar la información del cliente.');
+    });
+}
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        Swal.fire({
+            icon: '{% if category == "success" %}success{% else %}error{% endif %}',
+            title: '{{ category | capitalize }}',
+            text: '{{ message }}',
+            confirmButtonText: 'OK'
+        });
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    </script>
+{% endblock %}
+

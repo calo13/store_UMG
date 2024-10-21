@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Factura - Tienda Mariano Gálvez{% endblock %}
+
+{% block content %}
+<div class="container mt-5 p-4 border rounded shadow-sm bg-light" style="background-color: #f7f7f7; border: 1px solid #e0e0e0;">
+    <h2 class="text-center mb-4" style="font-weight: bold; color: #333;">Factura</h2>
+
+    <div class="d-flex justify-content-between mb-3">
+        <div>
+            <p class="h5 mb-1"><strong>Tienda Mariano Gálvez</strong></p>
+            <p class="mb-0">Dirección: Facultad de Ingenieria</p>
+            <p class="mb-0">Teléfono: +502 55447799</p>
+        </div>
+        <div class="text-end">
+            <p class="mb-1"><strong>Fecha y hora:</strong> {{ fecha_hora_actual }}</p>
+            <p class="mb-0"><strong>Factura N°1:</strong> {{ numero_factura }}</p>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between border p-3 mb-4" style="background-color: #e9ecef;">
+        <div>
+            <p class="mb-1"><strong>Cliente:</strong> {{ cliente_nombre }}</p>
+            <p class="mb-0"><strong>NIT:</strong> {{ cliente_nit }}</p>
+        </div>
+        <div class="text-end">
+            <p class="mb-0"><strong>Vendedor:</strong> Mariano Gálvez</p>
+        </div>
+    </div>
+
+    <h4 class="text-center mb-3" style="color: #555;">Detalles de la Compra</h4>
+
+    <table class="table table-striped table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>Producto</th>
+                <th class="text-center">Precio Unitario</th>
+                <th class="text-center">Cantidad</th>
+                <th class="text-end">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in factura_detalles %}
+            <tr>
+                <td>{{ item.nombre }}</td>
+                <td class="text-center">Q{{ item.precio_unitario }}</td>
+                <td class="text-center">{{ item.cantidad }}</td>
+                <td class="text-end">Q{{ item.total }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="d-flex justify-content-end">
+        <h4 class="text-end" style="color: #333;"><strong>Total General: Q{{ total_general }}</strong></h4>
+    </div>
+
+    <hr class="my-4">
+
+    <div class="text-center">
+        <p>Gracias por su compra.</p>
+        <p class="small text-muted">Este es un documento generado electrónicamente, no requiere firma.</p>
+    </div>
+</div>
+{% endblock %}

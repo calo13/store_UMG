@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Crear Factura - Tienda Mariano Gálvez{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Crear Factura</h2>
+
+    <form action="/factura" method="POST" class="p-4 border rounded shadow-sm bg-white">
+        <!-- Selección de cliente -->
+        <div class="mb-4">
+            <label for="cliente_id" class="form-label">Selecciona un Cliente</label>
+            <select name="cliente_id" class="form-select form-select-lg" required>
+                <option value="">-- Selecciona un Cliente --</option>
+                {% for cliente in clientes %}
+                <option value="{{ cliente.id }}">{{ cliente.nombres }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Título para la selección de productos -->
+        <div class="text-center mb-4">
+            <h4 class="p-2 text-white" style="background-color: #007bff; border-radius: 5px; display: inline-block;">
+                Selecciona Productos
+            </h4>
+        </div>
+
+        <!-- Selección de productos y cantidad -->
+        <div class="mb-4">
+            <div id="productos-list">
+                {% for producto in productos %}
+                <div class="row align-items-center border rounded p-3 mb-3 shadow-sm bg-light">
+                    <div class="col-md-6 d-flex align-items-center">
+                        <input class="form-check-input me-2" type="checkbox" name="productos" value="{{ producto.id }}">
+                        <label class="form-check-label">
+                            <strong>{{ producto.nombre }}</strong> - Q{{ producto.precio }} <small>(Disponible: {{ producto.cantidad }})</small>
+                        </label>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="number" name="cantidades" class="form-control form-control-lg" placeholder="Cantidad" min="1" max="{{ producto.cantidad }}" value="1">
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Botón para generar factura -->
+        <div class="d-grid">
+            <button type="submit" class="btn btn-lg btn-primary">Generar Factura</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

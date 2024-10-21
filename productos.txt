@@ -1,0 +1,6 @@
+1;Pan ;50;1515
+2;pollo;50;500
+3;pastel;50;50
+4;helados de fresa;50;8
+5;pachas;5;6
+6;fresas;50;80

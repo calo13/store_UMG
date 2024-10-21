@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}Gestionar Producto - Tienda Mariano Gálvez{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row align-items-center mt-5">
+        <!-- Formulario de registro de productos -->
+        <div class="col-md-6">
+            <div class="p-4"
+                style="border: 1px solid #ddd; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); background-color: #fff;">
+                <h2 class="mb-4 text-center">Registrar Nuevo Producto</h2>
+                <form action="/producto" method="POST">
+                    <div class="form-group mb-3">
+                        <input type="text" name="nombre_producto" class="form-control" placeholder="Nombre del Producto"
+                            required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <input type="text" name="precio" class="form-control" placeholder="Precio" required>
+                    </div>
+                    <div class="form-group mb-4">
+                        <input type="number" name="cantidad" class="form-control" placeholder="Cantidad" required>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-block">Registrar Producto</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="p-4"
+                style="border: 1px solid #ddd; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); background-color: #fff;">
+                <img src="{{ url_for('static', filename='images/3.jpg') }}" class="img-fluid rounded"
+                    alt="Registrar Cliente" style="max-height: 400px; width: 100%; object-fit: cover;">
+            </div>
+        </div>
+        <!-- Tabla de productos -->
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <h3 class="mb-4">Productos Registrados</h3>
+                <table class="table table-bordered table-striped">
+               
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Precio</th>
+                            <th>Cantidad</th>
+                            <th class="text-center" style="width: 1%;">Acciones</th> <!-- Ajustamos el ancho -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for producto in productos %}
+                        <tr>
+                            <td>{{ producto.id }}</td>
+                            <td>{{ producto.nombre_producto }}</td>
+                            <td>{{ producto.precio }}</td>
+                            <td>{{ producto.cantidad }}</td>
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center gap-2">
+                                    <button class="btn btn-warning btn-sm"
+                                        onclick="cargarDatosEnModalProducto('{{ producto.id }}')" data-bs-toggle="modal"
+                                        data-bs-target="#modalEditarProducto">
+                                        <i class="bi bi-pencil-square"></i> Modificar
+                                    </button>
+                                    <button class="btn btn-danger btn-sm"
+                                        onclick="confirmDeleteProducto('{{ producto.id }}')">
+                                        <i class="bi bi-trash"></i> Eliminar
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para editar producto -->
+<div class="modal fade" id="modalEditarProducto" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modificar Producto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formEditarProducto" action="/modificar_producto" method="POST">
+                    <input type="hidden" id="productoIdModal" name="id">
+                    <div class="form-group mb-3">
+                        <label for="nombre_producto">Nombre del Producto</label>
+                        <input type="text" name="nombre_producto" id="nombreProductoModal" class="form-control"
+                            required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="precio">Precio</label>
+                        <input type="text" name="precio" id="precioModal" class="form-control" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="cantidad">Cantidad</label>
+                        <input type="number" name="cantidad" id="cantidadModal" class="form-control" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-warning">Modificar Producto</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<!-- JS para los botones -->
+<script>
+    function confirmDeleteProducto(productoId) {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "No podrás revertir esta acción",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Redirigir a la ruta de eliminación con el ID del producto
+                window.location.href = `/eliminar_producto/${productoId}`;
+            }
+        })
+    }
+
+    function cargarDatosEnModalProducto(id) {
+        fetch(`/editar_producto/${id}`)
+            .then(response => response.json())
+            .then(data => {
+                // Cargar los datos en el modal
+                document.getElementById('productoIdModal').value = data.id;
+                document.getElementById('nombreProductoModal').value = data.nombre_producto;
+                document.getElementById('precioModal').value = data.precio;
+                document.getElementById('cantidadModal').value = data.cantidad;
+            }).catch(error => {
+                console.error('Error:', error);
+                alert('No se pudo cargar la información del producto.');
+            });
+    }
+
+
+    {% with messages = get_flashed_messages(with_categories = true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    Swal.fire({
+        icon: '{% if category == "success" %}success{% else %}error{% endif %}',
+        title: '{{ category | capitalize }}',
+        text: '{{ message }}',
+        confirmButtonText: 'OK'
+    });
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+</script>
+
+{% endblock %}
