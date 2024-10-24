@@ -45,14 +45,14 @@
 
     <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
 	<script>
-        // Usar los mensajes que se pasaron desde Flask en la variable `messages`
+       
         var messages = {{ messages | tojson }} || [];
-        console.log("Mensajes:", messages);  // Imprimir los mensajes en la consola
+        console.log("Mensajes:", messages);  
 
-        // Recorrer los mensajes y mostrarlos con SweetAlert
+  
         messages.forEach(function(item) {
-            var category = item[0];  // 'success' o 'danger'
-            var message = item[1];   // El mensaje real
+            var category = item[0];  
+            var message = item[1];   
             var icon = (category === 'success') ? 'success' : 'error';
             Swal.fire({
                 icon: icon,

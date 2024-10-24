@@ -6,47 +6,45 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 app = Flask(__name__)
 app.secret_key = 'secreto' 
 app = Flask(__name__)
-app.secret_key = 'secreto'  # Necesario para usar mensajes flash y sesiones
+app.secret_key = 'secreto'  
 
-# Ruta para mostrar el formulario de login
 @app.route('/login', methods=['GET'])
 def login_form():
-    messages = get_flashed_messages(with_categories=True)  # Obtener los mensajes flash
+    messages = get_flashed_messages(with_categories=True) 
     return render_template('login.html', messages=messages)
 
-# Ruta para manejar el formulario de login
+
 @app.route('/login', methods=['POST'])
 def login():
     username = request.form['username']
     password = request.form['password']
-    
-    # Verificar las credenciales con el archivo usuarios.txt
+  
     try:
         with open('usuarios.txt', 'r') as file:
             for line in file:
                 id, user, pwd = line.strip().split(';')
                 if user == username and pwd == password:
-                    session['username'] = username  # Guardar el usuario en la sesión
-                    flash('¡Login exitoso!', 'success')  # Mensaje de éxito
-                    return redirect(url_for('menu'))  # Redirigir al menú principal
+                    session['username'] = username  
+                    flash('¡Login exitoso!', 'success')  
+                    return redirect(url_for('menu'))  
     except FileNotFoundError:
         flash('Archivo de usuarios no encontrado.', 'danger')
 
-    flash('Usuario o contraseña incorrectos', 'danger')  # Mensaje de error
+    flash('Usuario o contraseña incorrectos', 'danger') 
     return redirect(url_for('login_form'))
 
-# Ruta para mostrar el formulario de registro
+
 @app.route('/register', methods=['GET'])
 def register_form():
     return render_template('register.html')
 
-# Ruta para manejar el registro
+
 @app.route('/register', methods=['POST'])
 def register():
     username = request.form['username']
     password = request.form['password']
     
-    # Verificar si el usuario ya existe
+   
     try:
         with open('usuarios.txt', 'r') as file:
             for line in file:
@@ -55,9 +53,7 @@ def register():
                     flash('El nombre de usuario ya existe. Intenta con otro.', 'danger')
                     return redirect(url_for('register_form'))
     except FileNotFoundError:
-        pass  # Si el archivo no existe, seguimos con el registro
-
-    # Asignar un ID único al nuevo usuario
+        pass  
     try:
         with open('usuarios.txt', 'r') as file:
             usuarios = file.readlines()
@@ -66,11 +62,11 @@ def register():
                 last_id = int(last_user.split(';')[0])
                 new_id = last_id + 1
             else:
-                new_id = 1  # Si no hay usuarios, el ID inicial es 1
+                new_id = 1  
     except FileNotFoundError:
-        new_id = 1  # Si el archivo no existe, el primer ID será 1
+        new_id = 1  
 
-    # Guardar los datos del nuevo usuario en el archivo usuarios.txt
+
     try:
         with open('usuarios.txt', 'a') as file:
             file.write(f'{new_id};{username};{password}\n')
@@ -80,7 +76,7 @@ def register():
         flash(f'Error al registrar: {str(e)}', 'danger')
         return redirect(url_for('register_form'))
 
-# Ruta para el menú principal
+
 @app.route('/menu')
 def menu():
     if 'username' in session:
@@ -89,23 +85,23 @@ def menu():
         flash('Debes iniciar sesión primero', 'danger')
         return redirect(url_for('login_form'))
 
-# Ruta para cerrar sesión
+
 @app.route('/logout')
 def logout():
-    session.pop('username', None)  # Eliminar el usuario de la sesión
+    session.pop('username', None) 
     flash('Has cerrado sesión exitosamente', 'success')
     return redirect(url_for('login_form'))
-# Mostrar clientes cuando sea una petición GET
+
 @app.route('/cliente', methods=['GET', 'POST'])
 def gestionar_cliente():
     if request.method == 'POST':
-        # Registro de cliente
+
         nombres = request.form['nombres']
         nit = request.form['nit']
         correo = request.form['correo']
         telefono = request.form['telefono']
 
-        # Generar un ID único para el cliente
+  
         try:
             with open('clientes.txt', 'r') as file:
                 clientes = file.readlines()
@@ -118,7 +114,6 @@ def gestionar_cliente():
         except FileNotFoundError:
             new_id = 1
 
-        # Guardar los datos del cliente en el archivo clientes.txt
         try:
             with open('clientes.txt', 'a') as file:
                 file.write(f'{new_id};{nombres};{nit};{correo};{telefono}\n')
@@ -128,7 +123,6 @@ def gestionar_cliente():
 
         return redirect(url_for('gestionar_cliente'))
 
-    # Si es una petición GET, mostramos los clientes registrados
     print("Entrando en el método GET para mostrar clientes...")  # Para verificar si entra aquí
     clientes = []
     try:
@@ -147,7 +141,6 @@ def gestionar_cliente():
 
     return render_template('cliente.html', clientes=clientes)
 
-# Ruta para eliminar un cliente
 @app.route('/eliminar_cliente/<int:id>')
 def eliminar_cliente(id):
     clientes = []
@@ -155,10 +148,8 @@ def eliminar_cliente(id):
         with open('clientes.txt', 'r') as file:
             clientes = [line.strip().split(';') for line in file]
         
-        # Filtrar el cliente que se quiere eliminar
         clientes = [cliente for cliente in clientes if int(cliente[0]) != id]
         
-        # Reescribir el archivo sin el cliente eliminado
         with open('clientes.txt', 'w') as file:
             for cliente in clientes:
                 file.write(';'.join(cliente) + '\n')
@@ -171,7 +162,6 @@ def eliminar_cliente(id):
 
 @app.route('/editar_cliente/<int:id>', methods=['GET'])
 def editar_cliente(id):
-    # Leer el archivo y buscar el cliente por ID
     try:
         with open('clientes.txt', 'r') as file:
             for line in file:
